@@ -1,0 +1,146 @@
+<div>
+  <el-breadcrumb class="bread" separator-class="el-icon-arrow-right">
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+    <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+  </el-breadcrumb>
+  <el-row :gutter="20">
+    <el-col :span="8">
+      <el-input v-model="searchText" placeholder="请输入内容">
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          slot="append"
+          @click="searchUser"
+        ></el-button>
+      </el-input>
+    </el-col>
+    <el-col :span="8">
+      <el-button type="primary" plain @click="showAddUserForm">
+        添加用户
+      </el-button>
+    </el-col>
+  </el-row>
+  <el-table :data="userData" style="width: 100%">
+    <el-table-column prop="username" label="姓名" width="180">
+    </el-table-column>
+    <el-table-column prop="email" label="邮箱" width="180"> </el-table-column>
+    <el-table-column prop="mobile" label="电话" width="180"> </el-table-column>
+    <el-table-column label="状态" width="180">
+      <template slot-scope="scope">
+        <el-switch
+          v-model="scope.row.mg_state"
+          @change="changeUserState(scope.row)"
+        ></el-switch>
+      </template>
+    </el-table-column>
+    <el-table-column label="操作">
+      <template slot-scope="scope">
+        <el-button
+          type="primary"
+          icon="el-icon-edit"
+          plain
+          @click="showEditUserForm(scope.row)"
+        ></el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          plain
+          @click="deleteUser(scope.row)"
+        ></el-button>
+        <el-button type="info" icon="el-icon-check" plain>分配角色</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+  <el-pagination
+    background
+    layout="prev, pager, next"
+    :total="total"
+    :page-size="pagesize"
+    @current-change="changePage"
+  >
+  </el-pagination>
+  <el-dialog
+    title="添加用户"
+    :visible.sync="addUserFormVisible"
+    width="50%"
+    @close="hideAddUserForm"
+  >
+    <el-form
+      :model="addUserForm"
+      status-icon
+      :rules="userRules"
+      ref="addUserForm"
+      label-width="80px"
+    >
+      <el-form-item label="用户名" prop="username">
+        <el-input
+          type="text"
+          v-model="addUserForm.username"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input
+          type="password"
+          v-model="addUserForm.password"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input
+          type="text"
+          v-model="addUserForm.email"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="手机" prop="mobile">
+        <el-input
+          type="text"
+          v-model="addUserForm.mobile"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer">
+      <el-button @click="hideAddUserForm">取消</el-button>
+      <el-button type="primary" @click="submitAddUser">确定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="编辑用户"
+    :visible.sync="editUserFormVisible"
+    width="50%"
+    @close="hideEditUserForm"
+  >
+    <el-form
+      :model="editUserForm"
+      status-icon
+      :rules="userRules"
+      ref="editUserForm"
+      label-width="80px"
+    >
+      <el-form-item label="用户名" prop="username">
+        <el-tag>{{editUserForm.username}}</el-tag>
+      </el-form-item>
+      <el-form-item label="邮箱" prop="email">
+        <el-input
+          type="text"
+          v-model="editUserForm.email"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="手机" prop="mobile">
+        <el-input
+          type="text"
+          v-model="editUserForm.mobile"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer">
+      <el-button @click="hideEditUserForm">取消</el-button>
+      <el-button type="primary" @click="submitEditUser">确定</el-button>
+    </span>
+  </el-dialog>
+</div>

@@ -1,1 +1,54 @@
-<div>roles</div>
+<div>
+  <el-breadcrumb class="bread" separator-class="el-icon-arrow-right">
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item>权限管理</el-breadcrumb-item>
+    <el-breadcrumb-item>角色列表</el-breadcrumb-item>
+  </el-breadcrumb>
+  <el-table :data="roleData" style="width: 100%">
+    <el-table-column type="expand">
+      <template slot-scope="scope">
+        <el-row class="row1" v-for="item in scope.row.children" :key="item.id">
+          <el-col :span="4">
+            <el-tag>{{item.authName}}</el-tag>
+            <i class="el-icon-arrow-right"></i>
+          </el-col>
+          <el-col :span="20">
+            <el-row
+              class="row2"
+              v-for="subItem in item.children"
+              :key="subItem.id"
+            >
+              <el-col :span="4">
+                <el-tag type="danger">{{subItem.authName}}</el-tag>
+                <i class="el-icon-arrow-right"></i>
+              </el-col>
+              <el-col :span="20">
+                <el-tag
+                  class="tag3"
+                  v-for="subSubItem in subItem.children"
+                  :key="subSubItem.id"
+                  closable
+                  type="success"
+                >
+                  {{subSubItem.authName}}
+                </el-tag>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+      </template>
+    </el-table-column>
+    <el-table-column type="index" label="#"> </el-table-column>
+    <el-table-column prop="roleName" label="角色姓名" width="180">
+    </el-table-column>
+    <el-table-column prop="roleDesc" label="描述" width="180">
+    </el-table-column>
+    <el-table-column label="操作">
+      <template slot-scope="scope">
+        <el-button type="primary" icon="el-icon-edit" plain></el-button>
+        <el-button type="danger" icon="el-icon-delete" plain></el-button>
+        <el-button type="info" icon="el-icon-check" plain>分配角色</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+</div>

@@ -15,7 +15,7 @@ export default {
       }
     },
     indexMethod (index) {
-      return index
+      return index + 1
     }
   }
 }

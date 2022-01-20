@@ -27,7 +27,7 @@ export default {
           type: 'success',
           duration: 1200
         })
-        this.$router.push('/home')
+        this.$router.push('/users')
       } else {
         this.$message({
           message: res.data.meta.msg,

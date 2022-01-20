@@ -47,8 +47,29 @@
       <template slot-scope="scope">
         <el-button type="primary" icon="el-icon-edit" plain></el-button>
         <el-button type="danger" icon="el-icon-delete" plain></el-button>
-        <el-button type="info" icon="el-icon-check" plain>分配角色</el-button>
+        <el-button
+          type="info"
+          icon="el-icon-check"
+          plain
+          @click="showAssignRightDialog(scope.row)"
+          >分配角色
+        </el-button>
       </template>
     </el-table-column>
   </el-table>
+  <el-dialog title="分配角色" :visible.sync="assignRightVisible">
+    <el-tree
+      :data="rightData"
+      show-checkbox
+      node-key="id"
+      :default-expand-all="true"
+      :props="defaultProps"
+      ref="tree"
+    >
+    </el-tree>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="hideAssignRightDialog">取消</el-button>
+      <el-button type="primary" @click="assignRight">确认</el-button>
+    </span>
+  </el-dialog>
 </div>

@@ -14,7 +14,13 @@ export default {
         goods_price: '',
         goods_weight: '',
         is_promote: true,
+        pics: [],
         goods_cat: []
+      },
+      dialogVisible: false,
+      dialogImageUrl: '',
+      headers: {
+        Authorization: localStorage.getItem('token')
       }
     }
   },
@@ -28,7 +34,6 @@ export default {
           type: 3
         }
       })
-      console.log(res);
       if (res.data.meta.status === 200) {
         this.categoryData = res.data.data
       }
@@ -39,6 +44,19 @@ export default {
     nextStep (activeIndex, activeName) {
       this.activeIndex = activeIndex
       this.activeName = activeName
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    handleRemove (file, fileList) {
+      const filePath = file.response.data.tmp_path
+      this.infoForm.pics = this.infoForm.pics.filter(x => x.pic != filePath)
+    },
+    uploadSuccess (file) {
+      this.infoForm.pics.push({
+        pic: file.data.tmp_path
+      })
     }
   }
 }

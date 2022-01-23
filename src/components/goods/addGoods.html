@@ -1,0 +1,64 @@
+<div>
+  <el-steps :active="activeIndex">
+    <el-step title="第一步" description="基本信息"></el-step>
+    <el-step title="第二步" description="商品图片"></el-step>
+    <el-step title="第三步" description="商品内容"></el-step>
+  </el-steps>
+  <el-tabs
+    v-model="activeName"
+    :tab-position="tabPosition"
+    @tab-click="clickTab"
+  >
+    <el-tab-pane name="info" label="基本信息">
+      <el-form ref="infoForm" :model="infoForm" label-width="120px">
+        <el-form-item label="商品名称">
+          <el-input
+            type="text"
+            v-model="infoForm.goods_name"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="商品价格">
+          <el-input
+            type="text"
+            v-model="infoForm.goods_price"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="商品数量">
+          <el-input
+            type="text"
+            v-model="infoForm.goods_number"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="商品重量">
+          <el-input
+            type="text"
+            v-model="infoForm.goods_weight"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="商品分类">
+          <el-cascader
+            v-model="infoForm.goods_cat"
+            :options="categoryData"
+            clearable
+            :props="defaultProps"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item label="是否促销">
+          <el-radio v-model="infoForm.is_promote" :label="true">是</el-radio>
+          <el-radio v-model="infoForm.is_promote" :label="false">否</el-radio>
+        </el-form-item>
+      </el-form>
+      <el-button primary @click="nextStep(2, 'pic')">下一步</el-button>
+    </el-tab-pane>
+    <el-tab-pane name="pic" label="商品图片">
+      <el-button primary @click="nextStep(3, 'desc')">下一步</el-button>
+    </el-tab-pane>
+    <el-tab-pane name="desc" label="商品内容">
+      <el-button primary>确定</el-button>
+    </el-tab-pane>
+  </el-tabs>
+</div>

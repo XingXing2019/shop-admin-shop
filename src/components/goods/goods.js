@@ -41,6 +41,9 @@ export default {
     },
     indexMethod (index) {
       return index
+    },
+    addGoods () {
+      this.$router.push('addGoods')
     }
   }
 }

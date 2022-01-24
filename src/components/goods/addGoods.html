@@ -71,7 +71,11 @@
       <el-button type="primary" @click="nextStep(3, 'desc')">下一步</el-button>
     </el-tab-pane>
     <el-tab-pane name="desc" label="商品内容">
-      <el-button type="primary">确定</el-button>
+      <quill-editor
+        v-model="infoForm.goods_introduce"
+        :options="editorOption"
+      />
+      <el-button type="primary" @click="addGood">确定</el-button>
     </el-tab-pane>
   </el-tabs>
 </div>

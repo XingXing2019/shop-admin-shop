@@ -1,4 +1,13 @@
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+import { quillEditor } from 'vue-quill-editor'
+
 export default {
+  components: {
+    quillEditor
+  },
   data () {
     return {
       tabPosition: 'left',
@@ -12,15 +21,20 @@ export default {
       infoForm: {
         goods_name: '',
         goods_price: '',
+        goods_number: '',
         goods_weight: '',
         is_promote: true,
         pics: [],
-        goods_cat: []
+        goods_cat: [],
+        goods_introduce: ''
       },
       dialogVisible: false,
       dialogImageUrl: '',
       headers: {
         Authorization: localStorage.getItem('token')
+      },
+      editorOption: {
+        placeholder: '请输入商品内容'
       }
     }
   },
@@ -38,6 +52,37 @@ export default {
         this.categoryData = res.data.data
       }
     },
+    async addGood () {
+      /* eslint-disable */
+      const {
+        goods_name,
+        goods_price,
+        goods_number,
+        goods_weight,
+        is_promote,
+        pics,
+        goods_cat,
+        goods_introduce
+      } = this.infoForm
+      /* eslint-enable */
+      let res = await this.$axios.post(`goods`, {
+        goods_name,
+        goods_cat: goods_cat.join(','),
+        goods_price,
+        goods_number,
+        goods_weight,
+        goods_introduce,
+        pics
+      })
+      if (res.data.meta.status === 201) {
+        this.$message({
+          message: '添加商品成功',
+          type: 'success',
+          duration: 800
+        })
+        this.$router.push('goods')
+      }
+    },
     clickTab (tab) {
       this.activeIndex = parseInt(tab.index) + 1
     },
@@ -51,7 +96,7 @@ export default {
     },
     handleRemove (file, fileList) {
       const filePath = file.response.data.tmp_path
-      this.infoForm.pics = this.infoForm.pics.filter(x => x.pic != filePath)
+      this.infoForm.pics = this.infoForm.pics.filter(x => x.pic !== filePath)
     },
     uploadSuccess (file) {
       this.infoForm.pics.push({

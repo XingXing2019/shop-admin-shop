@@ -2,12 +2,14 @@ export default {
   data () {
     return {
       userData: [],
+      roleData: [],
       total: 0,
       pagenum: 1,
       pagesize: 5,
       searchText: '',
       addUserFormVisible: false,
       editUserFormVisible: false,
+      assignRoleFormVisble: false,
       addUserForm: {
         username: '',
         password: '',
@@ -19,6 +21,12 @@ export default {
         username: '',
         email: '',
         mobile: ''
+      },
+      assignRoleForm: {
+        id: 0,
+        username: '',
+        role_name: '',
+        role_id: 0
       },
       userRules: {
         username: [
@@ -42,6 +50,7 @@ export default {
   },
   created () {
     this.loadUserData()
+    this.loadRoleData()
   },
   methods: {
     async loadUserData (pagenum = 1, query = '') {
@@ -56,6 +65,12 @@ export default {
         this.userData = res.data.data.users
         this.total = res.data.data.total
         this.pagenum = res.data.data.pagenum
+      }
+    },
+    async loadRoleData () {
+      let res = await this.$axios.get(`roles`)
+      if (res.data.meta.status === 200) {
+        this.roleData = res.data.data
       }
     },
     async submitAddUser () {
@@ -130,6 +145,21 @@ export default {
         this.hideEditUserForm()
       }
     },
+    async assignRole () {
+      const id = this.assignRoleForm.id
+      let res = await this.$axios.put(`users/${id}/role`, {
+        rid: this.assignRoleForm.role_id
+      })
+      if (res.data.meta.status === 200) {
+        this.$message({
+          message: '分配角色成功',
+          type: 'success',
+          duration: 800
+        })
+        this.hideAssignRoleForm()
+        this.loadUserData(this.pagenum)
+      }
+    },
     changePage (curPage) {
       this.loadUserData(curPage, this.searchText)
     },
@@ -161,6 +191,27 @@ export default {
     },
     hideEditUserForm () {
       this.editUserFormVisible = false
+    },
+    showAssignRoleForm (row) {
+      // eslint-disable-next-line
+      const { id, username, role_name, rid } = row
+      if (id === 500) {
+        this.$message({
+          message: '禁止编辑管理员角色',
+          type: 'error',
+          duration: 800
+        })
+        return
+      }
+      this.assignRoleFormVisble = true
+      this.assignRoleForm.id = id
+      this.assignRoleForm.username = username
+      // eslint-disable-next-line
+      this.assignRoleForm.role_name = role_name
+      this.assignRoleForm.role_id = rid
+    },
+    hideAssignRoleForm () {
+      this.assignRoleFormVisble = false
     }
   }
 }

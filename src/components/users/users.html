@@ -39,13 +39,11 @@
         <el-button
           type="primary"
           icon="el-icon-edit"
-          plain
           @click="showEditUserForm(scope.row)"
         ></el-button>
         <el-button
           type="danger"
           icon="el-icon-delete"
-          plain
           @click="deleteUser(scope.row)"
         ></el-button>
         <el-button
@@ -165,7 +163,10 @@
         <el-tag>{{assignRoleForm.username}}</el-tag>
       </el-form-item>
       <el-form-item label="角色列表">
-        <el-select v-model="assignRoleForm.role_id" :placeholder="assignRoleForm.role_name">
+        <el-select
+          v-model="assignRoleForm.role_id"
+          :placeholder="assignRoleForm.role_name"
+        >
           <el-option
             v-for="item in roleData"
             :key="item.id"

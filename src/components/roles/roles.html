@@ -12,9 +12,9 @@
       <template slot-scope="scope">
         <el-row class="row1" v-for="item in scope.row.children" :key="item.id">
           <el-col :span="4">
-            <el-tag closable @close="removeRight(scope.row, item.id)"
-              >{{item.authName}}</el-tag
-            >
+            <el-tag closable @close="removeRight(scope.row, item.id)">
+              {{item.authName}}
+            </el-tag>
             <i class="el-icon-arrow-right"></i>
           </el-col>
           <el-col :span="20">
@@ -28,8 +28,9 @@
                   type="danger"
                   closable
                   @close="removeRight(scope.row, subItem.id)"
-                  >{{subItem.authName}}</el-tag
                 >
+                  {{subItem.authName}}
+                </el-tag>
                 <i class="el-icon-arrow-right"></i>
               </el-col>
               <el-col :span="20">
@@ -56,8 +57,16 @@
     </el-table-column>
     <el-table-column label="操作">
       <template slot-scope="scope">
-        <el-button type="primary" icon="el-icon-edit"></el-button>
-        <el-button type="danger" icon="el-icon-delete" @click="deleteRole(scope.row)"></el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-edit"
+          @click="showEditRoleDialog(scope.row)"
+        ></el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          @click="deleteRole(scope.row)"
+        ></el-button>
         <el-button
           type="info"
           icon="el-icon-check"
@@ -113,6 +122,34 @@
     <span slot="footer">
       <el-button @click="hideAddRoleDialog">取消</el-button>
       <el-button type="primary" @click="addRole">确定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="编辑角色"
+    :visible.sync="editRoleVisible"
+    width="50%"
+    @close="hideEditRoleDialog"
+  >
+    <el-form
+      :model="editRoleForm"
+      status-icon
+      ref="editRoleForm"
+      label-width="80px"
+    >
+      <el-form-item label="角色名称" prop="roleName">
+        <el-tag>{{editRoleForm.roleName}}</el-tag>
+      </el-form-item>
+      <el-form-item label="角色描述" prop="roleDesc">
+        <el-input
+          type="text"
+          v-model="editRoleForm.roleDesc"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer">
+      <el-button @click="hideEditRoleDialog">取消</el-button>
+      <el-button type="primary" @click="editRole">确定</el-button>
     </span>
   </el-dialog>
 </div>

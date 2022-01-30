@@ -4,6 +4,7 @@ export default {
       roleData: [],
       rightData: [],
       assignRightVisible: false,
+      editRoleVisible: false,
       addRoleVisible: false,
       defaultProps: {
         children: 'children',
@@ -11,6 +12,10 @@ export default {
       },
       roleId: '',
       addRoleForm: {
+        roleName: '',
+        roleDesc: ''
+      },
+      editRoleForm: {
         roleName: '',
         roleDesc: ''
       }
@@ -128,10 +133,47 @@ export default {
         this.loadRolesData()
       }
     },
+    async editRole () {
+      let res = await this.$confirm('编辑角色, 继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
+      if (res === 'cancel') {
+        this.$message({
+          message: '取消编辑角色',
+          type: 'info',
+          duration: 800
+        })
+        return
+      }
+      const { roleName, roleDesc } = this.editRoleForm
+      res = await this.$axios.put(`roles/${this.roleId}`, {
+        roleName,
+        roleDesc
+      })
+      if (res.data.meta.status === 200) {
+        this.$message({
+          message: '编辑角色成功',
+          type: 'success',
+          duration: 800
+        })
+        this.loadRolesData()
+        this.hideEditRoleDialog()
+      }
+    },
     hideAssignRightDialog () {
       this.assignRightVisible = false
     },
     showAssignRightDialog (row) {
+      if (row.id === 30) {
+        this.$message({
+          message: '禁止编辑主管权限',
+          type: 'error',
+          duration: 800
+        })
+        return
+      }
       this.assignRightVisible = true
       this.roleId = row.id
       let keys = []
@@ -152,6 +194,16 @@ export default {
     hideAddRoleDialog () {
       this.$refs.addRoleForm.resetFields()
       this.addRoleVisible = false
+    },
+    showEditRoleDialog (row) {
+      this.roleId = row.id
+      this.editRoleForm.roleName = row.roleName
+      this.editRoleForm.roleDesc = row.roleDesc
+      this.editRoleVisible = true
+    },
+    hideEditRoleDialog () {
+      this.$refs.editRoleForm.resetFields()
+      this.editRoleVisible = false
     }
   }
 }

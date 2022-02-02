@@ -4,66 +4,71 @@
     <el-breadcrumb-item>用户管理</el-breadcrumb-item>
     <el-breadcrumb-item>用户列表</el-breadcrumb-item>
   </el-breadcrumb>
-  <el-row :gutter="20">
-    <el-col :span="8">
-      <el-input v-model="searchText" placeholder="请输入内容">
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          slot="append"
-          @click="searchUser"
-        ></el-button>
-      </el-input>
-    </el-col>
-    <el-col :span="8">
-      <el-button type="primary" plain @click="showAddUserForm">
-        添加用户
-      </el-button>
-    </el-col>
-  </el-row>
-  <el-table :data="userData" style="width: 100%">
-    <el-table-column prop="username" label="姓名" width="180">
-    </el-table-column>
-    <el-table-column prop="email" label="邮箱" width="180"> </el-table-column>
-    <el-table-column prop="mobile" label="电话"> </el-table-column>
-    <el-table-column label="状态">
-      <template slot-scope="scope">
-        <el-switch
-          v-model="scope.row.mg_state"
-          @change="changeUserState(scope.row)"
-        ></el-switch>
-      </template>
-    </el-table-column>
-    <el-table-column label="操作">
-      <template slot-scope="scope">
-        <el-button
-          type="primary"
-          icon="el-icon-edit"
-          @click="showEditUserForm(scope.row)"
-        ></el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          @click="deleteUser(scope.row)"
-        ></el-button>
-        <el-button
-          type="info"
-          icon="el-icon-check"
-          @click="showAssignRoleForm(scope.row)"
-          plain
-          >分配角色
+  <el-card>
+    <el-row :gutter="20">
+      <el-col :span="8">
+        <el-input v-model="searchText" placeholder="请输入内容">
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            slot="append"
+            @click="searchUser"
+          ></el-button>
+        </el-input>
+      </el-col>
+      <el-col :span="8">
+        <el-button type="primary" @click="showAddUserForm">
+          添加用户
         </el-button>
-      </template>
-    </el-table-column>
-  </el-table>
-  <el-pagination
-    background
-    layout="prev, pager, next"
-    :total="total"
-    :page-size="pagesize"
-    @current-change="changePage"
-  >
-  </el-pagination>
+      </el-col>
+    </el-row>
+    <el-table class="table" :data="userData" style="width: 100%">
+      <el-table-column prop="username" label="姓名" width="180">
+      </el-table-column>
+      <el-table-column prop="email" label="邮箱" width="180"> </el-table-column>
+      <el-table-column prop="mobile" label="电话" width="150"> </el-table-column>
+      <el-table-column label="状态" width="150">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.mg_state"
+            @change="changeUserState(scope.row)"
+          ></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-edit"
+            @click="showEditUserForm(scope.row)"
+          ></el-button>
+          <el-button
+            size="mini"
+            type="danger"
+            icon="el-icon-delete"
+            @click="deleteUser(scope.row)"
+          ></el-button>
+          <el-button
+            size="mini"
+            type="info"
+            icon="el-icon-check"
+            @click="showAssignRoleForm(scope.row)"
+            plain
+            >分配角色
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="pagesize"
+      @current-change="changePage"
+    >
+    </el-pagination>
+  </el-card>
   <el-dialog
     title="添加用户"
     :visible.sync="addUserFormVisible"

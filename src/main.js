@@ -7,6 +7,7 @@ import router from './router/router.js'
 import ElementUI from '../node_modules/element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/common.css'
+import TreeTable from 'vue-table-with-tree-grid'
 
 Vue.use(ElementUI)
 
@@ -23,6 +24,8 @@ axios.interceptors.request.use(
   }
 )
 Vue.prototype.$axios = axios
+
+Vue.component('tree-table', TreeTable)
 
 /* eslint-disable no-new */
 new Vue({

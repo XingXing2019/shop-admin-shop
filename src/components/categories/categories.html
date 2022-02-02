@@ -1,0 +1,134 @@
+<div>
+  <el-breadcrumb class="bread" separator-class="el-icon-arrow-right">
+    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item>商品管理</el-breadcrumb-item>
+    <el-breadcrumb-item>商品分类</el-breadcrumb-item>
+  </el-breadcrumb>
+  <el-card>
+    <el-row>
+      <el-col>
+        <el-button type="primary" @click="showAddCategoryForm"
+          >添加分类</el-button
+        >
+      </el-col>
+    </el-row>
+    <tree-table
+      :data="categories"
+      :columns="columns"
+      :selection-type="false"
+      :expand-type="false"
+      :show-index="true"
+      index-text="#"
+      :border="true"
+      :show-row-hover="false"
+      class="table"
+    >
+      <template slot="isok" slot-scope="scope">
+        <i
+          class="el-icon-success"
+          style="color:lightgreen"
+          v-if="!scope.row.cat_deleted"
+        ></i>
+        <i class="el-icon-error" style="color:red" v-else></i>
+      </template>
+      <template slot="order" slot-scope="scope">
+        <el-tag size="mini" v-if="scope.row.cat_level == 0">一级</el-tag>
+        <el-tag size="mini" type="success" v-else-if="scope.row.cat_level == 1"
+          >二级</el-tag
+        >
+        <el-tag size="mini" type="warning" v-else>三级</el-tag>
+      </template>
+      <template slot="opt" , slot-scope="scope">
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-edit"
+          @click="showEditCategoryDialog(scope.row)"
+          >编辑</el-button
+        >
+        <el-button
+          size="mini"
+          type="danger"
+          icon="el-icon-delete"
+          @click="deleteCategory(scope.row)"
+          >删除</el-button
+        >
+      </template>
+    </tree-table>
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      :page-sizes="[3, 5, 10, 15]"
+      :page-size="queryInfo.pagesize"
+      :current-page="queryInfo.pagenum"
+      @current-change="changePage"
+      @size-change="changeSize"
+    >
+    </el-pagination>
+  </el-card>
+  <el-dialog
+    title="添加分类"
+    :visible.sync="addCategoryFormVisible"
+    width="50%"
+    @close="hideAddCategoryForm"
+  >
+    <el-form
+      :model="addCategoryForm"
+      status-icon
+      ref="addCategoryForm"
+      label-width="80px"
+      :rules="categoryRules"
+    >
+      <el-form-item label="分类名称" prop="cat_name">
+        <el-input
+          type="text"
+          v-model="addCategoryForm.cat_name"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="父级分类">
+        <el-cascader
+          expand-trigger="hover"
+          v-model="selectedKeys"
+          :options="parentCategories"
+          clearable
+          :props="defaultProps"
+          @change="selectedChange"
+          change-on-select
+        >
+        </el-cascader>
+      </el-form-item>
+    </el-form>
+    <span slot="footer">
+      <el-button @click="hideAddCategoryForm">取消</el-button>
+      <el-button type="primary" @click="addCategory">确定</el-button>
+    </span>
+  </el-dialog>
+  <el-dialog
+    title="编辑分类"
+    :visible.sync="editCategoryFormVisible"
+    width="50%"
+    @close="hideEditCategoryForm"
+  >
+    <el-form
+      :model="editCategoryForm"
+      status-icon
+      ref="editCategoryForm"
+      label-width="80px"
+      :rules="categoryRules"
+    >
+      <el-form-item label="分类名称" prop="cat_name">
+        <el-input
+          type="text"
+          v-model="editCategoryForm.cat_name"
+          autocomplete="off"
+        ></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer">
+      <el-button @click="hideEditCategoryForm">取消</el-button>
+      <el-button type="primary" @click="editCategory">确定</el-button>
+    </span>
+  </el-dialog>
+</div>

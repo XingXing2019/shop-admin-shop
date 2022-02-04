@@ -107,7 +107,7 @@ export default {
             type: 'success',
             duration: 800
           })
-          this.loadUserData()
+          this.loadUserData(this.pagenum)
         }
       } catch (error) {
         this.$message({
@@ -162,6 +162,10 @@ export default {
     },
     changePage (curPage) {
       this.loadUserData(curPage, this.searchText)
+    },
+    changeSize (curSize) {
+      this.pagesize = curSize
+      this.loadUserData(this.pagenum)
     },
     searchUser () {
       this.loadUserData(1, this.searchText)

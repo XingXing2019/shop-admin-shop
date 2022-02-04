@@ -88,7 +88,7 @@ export default {
     },
     async deleteCategory (row) {
       try {
-        await this.$confirm('删除分类， 是否继续?', '提示', {
+        await this.$confirm('删除分类，是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

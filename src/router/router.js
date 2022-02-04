@@ -9,6 +9,7 @@ const Rights = () => import('../components/rights/rights.vue')
 const Goods = () => import('../components/goods/goods.vue')
 const AddGoods = () => import('../components/goods/addGoods.vue')
 const Categories = () => import('../components/categories/categories.vue')
+const Params = () => import('../components/params/params.vue')
 
 Vue.use(Router)
 
@@ -26,7 +27,8 @@ const router = new Router({
         { path: '/rights', name: 'rights', component: Rights },
         { path: '/goods', name: 'goods', component: Goods },
         { path: '/addGoods', name: 'addGoods', component: AddGoods },
-        { path: '/categories', name: 'categories', component: Categories }
+        { path: '/categories', name: 'categories', component: Categories },
+        { path: '/params', name: 'params', component: Params }
       ]
     }
   ]

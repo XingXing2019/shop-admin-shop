@@ -3,7 +3,6 @@ export default {
     return {
       categories: [],
       params: [],
-      attrs: [],
       defaultProps: {
         label: 'cat_name',
         value: 'cat_id',
@@ -15,13 +14,11 @@ export default {
       addParamsFormVisible: false,
       editParamsFormVisible: false,
       addParamsForm: {
-        attr_name: '',
-        attr_vals: ''
+        attr_name: ''
       },
       editParamForm: {
         attr_id: 0,
-        attr_name: '',
-        attr_vals: ''
+        attr_name: ''
       },
       paramsRules: {
         attr_name: [
@@ -51,9 +48,6 @@ export default {
     },
     editParamTitle () {
       return '编辑' + this.titleText
-    },
-    labelText () {
-      return this.activeName === 'many' ? '参数名称' : '属性名称'
     }
   },
   methods: {
@@ -69,6 +63,11 @@ export default {
         params: { sel: this.activeName }
       })
       if (res.data.meta.status === 200) {
+        res.data.data.forEach(item => {
+          item.attr_vals = item.attr_vals === '' ? [] : item.attr_vals.split(',')
+          item.inputValue = ''
+          item.inputVisible = false
+        })
         this.params = res.data.data
       }
     },
@@ -77,7 +76,6 @@ export default {
       const { attr_name, attr_vals } = this.addParamsForm
       let res = await this.$axios.post(`categories/${this.categoryId}/attributes`, {
         attr_name,
-        attr_vals,
         attr_sel: this.activeName
       })
       if (res.data.meta.status === 201) {
@@ -121,7 +119,6 @@ export default {
       const { attr_name, attr_vals } = this.editParamForm
       let res = await this.$axios.put(`categories/${this.categoryId}/attributes/${attrId}`, {
         attr_name,
-        attr_vals,
         attr_sel: this.activeName
       })
       if (res.data.meta.status === 200) {
@@ -134,9 +131,50 @@ export default {
         this.hideEditParamsForm()
       }
     },
+    async confirmInput (row) {
+      if (row.inputValue.trim().length === 0) {
+        return
+      }
+      row.attr_vals.push(row.inputValue)
+      row.inputValue = ''
+      row.inputVisible = false
+      this.saveAttrVals(row)
+    },
+    async deleteInput (i, row) {
+      try {
+        await this.$confirm(`删除属性, 是否继续`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        row.attr_vals.splice(i, 1)
+        this.saveAttrVals(row)
+      } catch (error) {
+        this.$message({
+          message: `取消删除属性`,
+          type: 'info',
+          duration: 800
+        })
+      }
+    },
+    async saveAttrVals (row) {
+      let res = await this.$axios.put(`categories/${row.cat_id}/attributes/${row.attr_id}`, {
+        attr_name: row.attr_name,
+        attr_sel: this.activeName,
+        attr_vals: row.attr_vals.join(',')
+      })
+      if (res.data.meta.status === 200) {
+        this.$message({
+          message: '修改属性成功',
+          type: 'success',
+          duration: 800
+        })
+      }
+    },
     selectChange () {
       if (this.selectedKeys.length !== 3) {
         this.selectedKeys.length = 0
+        this.params = []
       }
       this.loadParamData()
     },
@@ -159,6 +197,12 @@ export default {
       this.editParamForm.attr_name = row.attr_name
       this.editParamForm.attr_vals = row.attr_vals
       this.editParamsFormVisible = true
+    },
+    showInput (row) {
+      row.inputVisible = true
+      this.$nextTick(x => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
     }
   }
 }

@@ -7,7 +7,12 @@
   <el-card>
     <el-row :gutter="20">
       <el-col :span="8">
-        <el-input v-model="searchText" placeholder="请输入内容">
+        <el-input
+          v-model="searchText"
+          placeholder="请输入内容"
+          clearable
+          @clear="loadGoodsData"
+        >
           <el-button
             type="primary"
             icon="el-icon-search"
@@ -28,34 +33,45 @@
         label="#"
         :index="indexMethod"
       ></el-table-column>
-      <el-table-column
-        prop="goods_name"
-        label="商品名称"
-        width="180"
-      ></el-table-column>
+      <el-table-column prop="goods_name" label="商品名称"></el-table-column>
       <el-table-column
         prop="goods_price"
         label="商品价格"
-        width="180"
+        width="150"
       ></el-table-column>
       <el-table-column
         prop="goods_number"
         label="商品数量"
-        width="180"
+        width="150"
       ></el-table-column>
       <el-table-column label="创建时间" width="180">
         <template slot-scope="scope">
           <span>{{scope.row.add_time | dateFilter}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180"></el-table-column>
+      <el-table-column label="操作" width="240">
+        <template slot-scope="scope">
+          <el-button size="mini" type="primary" icon="el-icon-edit"
+            >编辑</el-button
+          >
+          <el-button
+            size="mini"
+            type="danger"
+            icon="el-icon-delete"
+            @click="deleteGood(scope.row)"
+            >删除</el-button
+          >
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       background
-      layout="prev, pager, next"
+      layout="total, sizes, prev, pager, next, jumper"
       :total="totalGoods"
       :page-size="pagesize"
+      :page-sizes="[5, 10, 15]"
       @current-change="changePage"
+      @size-change="changeSize"
     >
     </el-pagination>
   </el-card>

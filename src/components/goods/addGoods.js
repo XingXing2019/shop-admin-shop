@@ -10,6 +10,7 @@ export default {
   },
   data () {
     return {
+      uploadUrl: 'http://localhost:8888/api/private/v1/upload',
       tabPosition: 'left',
       activeIndex: 1,
       activeName: 'info',
@@ -20,13 +21,32 @@ export default {
       },
       infoForm: {
         goods_name: '',
-        goods_price: '',
-        goods_number: '',
-        goods_weight: '',
+        goods_price: 0,
+        goods_number: 0,
+        goods_weight: 0,
         is_promote: true,
         pics: [],
         goods_cat: [],
         goods_introduce: ''
+      },
+      params: [],
+      attrs: [],
+      infoRules: {
+        goods_name: [
+          { required: true, message: '请输入商品名称', trigger: 'blur' }
+        ],
+        goods_price: [
+          { required: true, message: '请输入商品价格', trigger: 'blur' }
+        ],
+        goods_number: [
+          { required: true, message: '请输入商品数量', trigger: 'blur' }
+        ],
+        goods_weight: [
+          { required: true, message: '请输入商品重量', trigger: 'blur' }
+        ],
+        goods_cat: [
+          { required: true, message: '请选择商品分类', trigger: 'blur' }
+        ]
       },
       dialogVisible: false,
       dialogImageUrl: '',
@@ -41,6 +61,14 @@ export default {
   created () {
     this.loadCategoryData()
   },
+  computed: {
+    categoryId () {
+      let len = this.infoForm.goods_cat.length
+      if (len === 3) {
+        return this.infoForm.goods_cat[len - 1]
+      }
+    }
+  },
   methods: {
     async loadCategoryData () {
       let res = await this.$axios.get(`categories`, {
@@ -50,6 +78,19 @@ export default {
       })
       if (res.data.meta.status === 200) {
         this.categoryData = res.data.data
+      }
+    },
+    async loadAttrData (sel) {
+      let res = await this.$axios.get(`categories/${this.categoryId}/attributes`, {
+        params: { sel }
+      })
+      if (res.data.meta.status === 200) {
+        if (sel === 'many') {
+          res.data.data.forEach(item => {
+            item.attr_vals = item.attr_vals === '' ? [] : item.attr_vals.split(',')
+          })
+        }
+        sel === 'only' ? this.attrs = res.data.data : this.params = res.data.data
       }
     },
     async addGood () {
@@ -85,10 +126,20 @@ export default {
     },
     clickTab (tab) {
       this.activeIndex = parseInt(tab.index) + 1
+      if (this.activeIndex === 4) {
+        this.loadAttrData('only')
+      } else if (this.activeIndex === 5) {
+        this.loadAttrData('many')
+      }
     },
     nextStep (activeIndex, activeName) {
       this.activeIndex = activeIndex
       this.activeName = activeName
+      if (activeName === 'attr') {
+        this.loadAttrData('only')
+      } else if (activeName === 'param') {
+        this.loadAttrData('many')
+      }
     },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url
@@ -98,10 +149,25 @@ export default {
       const filePath = file.response.data.tmp_path
       this.infoForm.pics = this.infoForm.pics.filter(x => x.pic !== filePath)
     },
+    handleChange () {
+      if (this.infoForm.goods_cat.length !== 3) {
+        this.infoForm.goods_cat.length = 0
+      }
+    },
     uploadSuccess (file) {
       this.infoForm.pics.push({
         pic: file.data.tmp_path
       })
+    },
+    beforeTabLeave (activeName, oldActiveName) {
+      if (oldActiveName === 'info' && this.infoForm.goods_cat.length !== 3) {
+        this.$message({
+          message: '请选择商品分类',
+          type: 'warning',
+          duration: 800
+        })
+        return false
+      }
     }
   }
 }

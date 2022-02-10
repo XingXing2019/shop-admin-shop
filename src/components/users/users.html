@@ -7,7 +7,12 @@
   <el-card>
     <el-row :gutter="20">
       <el-col :span="8">
-        <el-input v-model="searchText" placeholder="请输入内容">
+        <el-input
+          v-model="searchText"
+          placeholder="请输入内容"
+          clearable
+          @clear="loadUserData"
+        >
           <el-button
             type="primary"
             icon="el-icon-search"

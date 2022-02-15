@@ -27,7 +27,8 @@ export default {
         is_promote: true,
         pics: [],
         goods_cat: [],
-        goods_introduce: ''
+        goods_introduce: '',
+        attrs: []
       },
       params: [],
       attrs: [],
@@ -94,6 +95,20 @@ export default {
       }
     },
     async addGood () {
+      this.attrs.forEach(item => {
+        const newInfo = {
+          attr_id: item.attr_id,
+          attr_value: item.attr_vals
+        }
+        this.infoForm.attrs.push(newInfo)
+      })
+      this.params.forEach(item => {
+        const newInfo = {
+          attr_id: item.attr_id,
+          attr_value: item.attr_vals.join(',')
+        }
+        this.infoForm.attrs.push(newInfo)
+      })
       /* eslint-disable */
       const {
         goods_name,
@@ -103,7 +118,8 @@ export default {
         is_promote,
         pics,
         goods_cat,
-        goods_introduce
+        goods_introduce,
+        attrs
       } = this.infoForm
       /* eslint-enable */
       let res = await this.$axios.post(`goods`, {
@@ -113,7 +129,8 @@ export default {
         goods_number,
         goods_weight,
         goods_introduce,
-        pics
+        pics,
+        attrs
       })
       if (res.data.meta.status === 201) {
         this.$message({
